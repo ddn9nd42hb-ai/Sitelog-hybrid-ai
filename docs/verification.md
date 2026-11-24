@@ -68,7 +68,21 @@ The built `dist/` was served locally and opened in headless Chromium at 1280×98
 
 Rendered screenshots of the empty state, the populated state (seeded preview data), the report and the mobile layout were reviewed during design QA.
 
-## 6. What is **not** verified yet
+## 6. The Firebase SDK path executes in a real browser
+
+With a placeholder config in `.env` (fake apiKey, real-shaped projectId/appId) the built app was driven again:
+
+```
+notice present: 0                      # "Firebase is not configured" gone
+toast:          The cloud model could not be reached.
+trace row:      extract · Prefer on-device → · Unknown · 0 ms · call failed: …
+console:        "This page uses Chrome's Built-In AI features (LanguageModel)!"
+                "Failed to load resource: the server responded with a status of 400"
+```
+
+That is the intended evidence: `initializeApp` → `getAI` → `getGenerativeModel({ mode, onDeviceParams, inCloudParams })` → `generateContent` all executed, Chrome reported that the built-in `LanguageModel` API was touched, the request reached Google's endpoint, and only the API call itself failed — with a 400 from the placeholder key. The error was normalized into the product's own message and recorded in the trace instead of throwing into the void.
+
+## 7. What is **not** verified yet
 
 The live AI calls. Firebase AI Logic requires a Firebase project with AI Logic enabled and App Check enforced, and the App Check debug token must be safelisted in that project's console. Both need the account owner's sign-in, so this step is documented in `docs/firebase-setup.md` and then a single `npm run dev` verifies:
 
