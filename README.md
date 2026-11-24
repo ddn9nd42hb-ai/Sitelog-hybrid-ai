@@ -68,7 +68,7 @@ Finding → IndexedDB → findings list → generateReport() → streamed client
 | File | Call |
 | --- | --- |
 | `src/ai/client.ts` | `getAI(app, { backend: new GoogleAIBackend() })`, `getGenerativeModel(ai, { mode, onDeviceParams, inCloudParams })`, `model.initializeDeviceModel()`, `model.generateContent()`, `model.generateContentStream()` |
-| `src/ai/client.ts` | `initializeAppCheck(app, { provider: new ReCaptchaV3Provider(siteKey) })` |
+| `src/ai/client.ts` | `initializeAppCheck(app, { provider: new ReCaptchaEnterpriseProvider(siteKey) })` |
 | `src/ai/router.ts` | `InferenceMode.PREFER_ON_DEVICE` / `PREFER_IN_CLOUD` / `ONLY_ON_DEVICE` / `ONLY_IN_CLOUD` |
 | `src/ui/app.ts` | renders `response.inferenceSource` (`on_device` / `in_cloud`) on every finding and trace row |
 

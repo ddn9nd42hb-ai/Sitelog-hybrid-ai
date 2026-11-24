@@ -6,7 +6,7 @@
  * `response.inferenceSource` so the UI can show where the answer came from.
  */
 import { getApp, getApps, initializeApp, type FirebaseApp, type FirebaseOptions } from "firebase/app";
-import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
+import { CustomProvider, initializeAppCheck, ReCaptchaEnterpriseProvider } from "firebase/app-check";
 import {
   GoogleAIBackend,
   getAI,
@@ -92,17 +92,27 @@ export class FirebaseHybridClient implements HybridClient {
         globals.FIREBASE_APPCHECK_DEBUG_TOKEN = this.options.debugToken || true;
       }
       if (this.options.recaptchaSiteKey) {
+        // Production attestation. The Firebase console now issues App Check keys
+        // through **Fraud Defense (reCAPTCHA Enterprise)** — the classic
+        // reCAPTCHA v3 provider is being retired — so the site key is wired to
+        // the Enterprise provider.
         initializeAppCheck(this.app, {
-          provider: new ReCaptchaV3Provider(this.options.recaptchaSiteKey),
+          provider: new ReCaptchaEnterpriseProvider(this.options.recaptchaSiteKey),
           isTokenAutoRefreshEnabled: true
         });
       } else if (debug) {
         // Debug provider: App Check must still be *initialized* or the AI SDK
         // finds no app-check instance and sends no token at all. With
         // FIREBASE_APPCHECK_DEBUG_TOKEN set, the SDK exchanges the debug token
-        // and never calls this provider, so its key is only a placeholder.
+        // and never calls this provider, so it only has to be a valid stand-in
+        // that loads no external script and no real site key.
         initializeAppCheck(this.app, {
-          provider: new ReCaptchaV3Provider("debug-mode"),
+          provider: new CustomProvider({
+            getToken: async () => ({
+              token: "app-check-debug-placeholder",
+              expireTimeMillis: Date.now() + 30 * 60 * 1000
+            })
+          }),
           isTokenAutoRefreshEnabled: true
         });
       } else {

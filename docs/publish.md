@@ -44,7 +44,7 @@ npm run build
 firebase deploy --only hosting
 ```
 
-Before deploying publicly, replace the App Check debug provider with reCAPTCHA v3 (`VITE_RECAPTCHA_SITE_KEY`) and rebuild — see `docs/firebase-setup.md` §7.
+Before deploying publicly, replace the App Check debug provider with a Fraud Defense (reCAPTCHA Enterprise) site key (`VITE_RECAPTCHA_SITE_KEY`, wired through `ReCaptchaEnterpriseProvider`) and rebuild — see `docs/firebase-setup.md` §7.
 
 ## 3. Point the submission at the published artifacts
 

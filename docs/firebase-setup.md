@@ -89,7 +89,7 @@ npm run build
 firebase deploy --only hosting
 ```
 
-For production App Check, register a **reCAPTCHA v3** site key in **Security → App Check → Apps → sitelog-web → reCAPTCHA**, put it in `VITE_RECAPTCHA_SITE_KEY`, rebuild and deploy. Do not ship the debug provider to a public URL.
+For production App Check, register a key in **Security → App Check → Apps → sitelog-web**. The console now offers **Fraud Defense (reCAPTCHA Enterprise)** for web apps (the classic reCAPTCHA v3 provider is being retired), and `src/ai/client.ts` wires the key through `ReCaptchaEnterpriseProvider`. Put the site key in `VITE_RECAPTCHA_SITE_KEY`, rebuild and deploy. Do not ship the debug provider to a public URL.
 
 ## Troubleshooting
 
