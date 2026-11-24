@@ -249,7 +249,7 @@ export class FirebaseHybridClient implements HybridClient {
         return new SiteLogAIError(
           "The cloud model could not be reached.",
           code,
-          "You are probably offline. On-device inference still works in Chrome with Gemini Nano."
+          "Either the network is down (on-device inference still works in Chrome with Gemini Nano) or this build's Firebase config / App Check token does not belong to a project with AI Logic enabled."
         );
       case "api-not-enabled":
         return new SiteLogAIError(
