@@ -2,6 +2,7 @@
 
 원문: <https://firebasehybridaihackathon.devpost.com/rules> · 이벤트: <https://firebasehybridaihackathon.devpost.com/>
 확인일: 2026-11-24
+제출 저장소: <https://github.com/ddn9nd42hb-ai/Sitelog-hybrid-ai> (공개, main, Apache-2.0)
 
 ## 1. 일정 (한국시간 환산)
 
@@ -35,8 +36,8 @@
 | # | 요건 | 상태 |
 | --- | --- | --- |
 | 1 | Devpost 계정 + 프로젝트 등록 | **미완 — 계정 없음(대행 불가, 사용자 필요)** |
-| 2 | 공개 GitHub/GitLab 저장소 URL | **미완 — GitHub 연결 끊김** (로컬 저장소·라이선스 준비 완료) |
-| 3 | 저장소에 오픈소스 라이선스 파일, About 영역에 표시 | 준비 완료 (Apache-2.0 `LICENSE`) |
+| 2 | 공개 GitHub/GitLab 저장소 URL | **완료** — <https://github.com/ddn9nd42hb-ai/Sitelog-hybrid-ai> (공개, Apache-2.0) |
+| 3 | 저장소에 오픈소스 라이선스 파일, About 영역에 표시 | 완료 — Apache-2.0 `LICENSE`(저작권자 Kim Yumin), GitHub 자동 인식 |
 | 4 | Firebase AI Logic이 런타임에 실제 import·호출된 코드 (README 언급만으로 불가) | 준비 완료 (`src/ai/client.ts`) |
 | 5 | 데모 영상 ≤3분, **YouTube 공개**, 영어 또는 영어 자막, 실제 동작 화면 | **미완 — 촬영 대본 준비 완료** (`docs/video-script.md`) |
 | 6 | 영어 텍스트 설명(Firebase AI Logic 사용법·기능·가치제안) | 준비 완료 (`docs/devpost-submission.md`) |

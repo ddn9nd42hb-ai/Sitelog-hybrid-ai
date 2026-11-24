@@ -149,7 +149,7 @@ The "Hybrid trace" rail shows, per call, the requested mode, the inference sourc
 ## Repository
 
 ```
-<GITHUB URL> — Apache-2.0, public
+https://github.com/ddn9nd42hb-ai/Sitelog-hybrid-ai — Apache-2.0 (detected by GitHub, shown in About), public
 ```
 
 ---
@@ -162,7 +162,7 @@ The "Hybrid trace" rail shows, per call, the requested mode, the inference sourc
 | Tagline | above |
 | Thumbnail | 3:2 image, 1280×853 (use a real screenshot of findings + trace) |
 | Video demo link | YouTube, public, ≤ 3 min, English audio |
-| "Try it out" links | hosted URL (recommended) + repo URL |
+| "Try it out" links | hosted URL (recommended) + repo URL: https://github.com/ddn9nd42hb-ai/Sitelog-hybrid-ai |
 | Platform selection | Web (Chrome) |
 | Built with | above |
 | Repo license | Apache-2.0, visible in the GitHub About sidebar |
