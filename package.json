@@ -1,0 +1,24 @@
+{
+  "name": "sitelog-hybrid-ai",
+  "private": true,
+  "version": "1.0.0",
+  "description": "SiteLog — offline-first field inspection notes with Firebase AI Logic hybrid inference (Gemini Nano 4 on-device + cloud fallback).",
+  "license": "Apache-2.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "firebase": "13.4.0"
+  },
+  "devDependencies": {
+    "jsdom": "^29.1.1",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.3",
+    "vitest": "^2.1.8"
+  }
+}

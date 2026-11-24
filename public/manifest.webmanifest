@@ -1,0 +1,15 @@
+{
+  "name": "SiteLog — hybrid field notes",
+  "short_name": "SiteLog",
+  "description": "Turn site notes into actionable findings and a client report. Runs on Gemini Nano when it can, in the cloud when it must.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0e1113",
+  "theme_color": "#0e1113",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
