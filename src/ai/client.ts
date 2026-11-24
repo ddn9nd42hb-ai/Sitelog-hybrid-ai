@@ -96,7 +96,16 @@ export class FirebaseHybridClient implements HybridClient {
           provider: new ReCaptchaV3Provider(this.options.recaptchaSiteKey),
           isTokenAutoRefreshEnabled: true
         });
-      } else if (!debug) {
+      } else if (debug) {
+        // Debug provider: App Check must still be *initialized* or the AI SDK
+        // finds no app-check instance and sends no token at all. With
+        // FIREBASE_APPCHECK_DEBUG_TOKEN set, the SDK exchanges the debug token
+        // and never calls this provider, so its key is only a placeholder.
+        initializeAppCheck(this.app, {
+          provider: new ReCaptchaV3Provider("debug-mode"),
+          isTokenAutoRefreshEnabled: true
+        });
+      } else {
         // No attestation provider at all: AI Logic will reject calls, so say so now.
         this.initError = new SiteLogAIError(
           "App Check is not configured.",
@@ -215,25 +224,55 @@ export class FirebaseHybridClient implements HybridClient {
     const started = now();
     try {
       const { stream, response } = await model.generateContentStream(params.prompt);
+      // The SDK's `response` promise can reject while we are still reading the
+      // chunk iterator; without a handler that rejection surfaces as an
+      // unhandled error in the page. We read it below only when the stream ends.
+      void Promise.resolve(response).catch(() => undefined);
       let buffer = "";
-      for await (const chunk of stream) {
-        let piece = "";
-        try {
-          piece = chunk.text();
-        } catch {
-          piece = "";
+      let source: InferenceSourceLabel = "unknown";
+      let streamError: unknown = null;
+      try {
+        for await (const chunk of stream) {
+          const chunkSource = (chunk as { inferenceSource?: string }).inferenceSource;
+          if (chunkSource) source = chunkSource as InferenceSourceLabel;
+          let piece = "";
+          try {
+            piece = chunk.text();
+          } catch {
+            piece = "";
+          }
+          if (piece) {
+            buffer += piece;
+            onChunk(piece);
+          }
         }
-        if (piece) {
-          buffer += piece;
-          onChunk(piece);
-        }
+        const final = await response;
+        source = ((final.inferenceSource ?? source) as InferenceSourceLabel);
+        if (!buffer) buffer = final.text?.() ?? "";
+      } catch (err) {
+        streamError = err;
       }
-      const final = await response;
-      return {
-        text: buffer || (final.text?.() ?? ""),
-        source: ((final.inferenceSource ?? "unknown") as InferenceSourceLabel),
-        ms: Math.round(now() - started)
-      };
+
+      if (streamError && !buffer) {
+        // The SSE stream can break before the first chunk; one non-streamed
+        // call keeps the report working instead of failing the whole draft.
+        const fallback = await this.generate(params);
+        if (fallback.text) onChunk(fallback.text);
+        return fallback;
+      }
+      if (streamError && (streamError as { code?: string })?.code !== "parse-failed") {
+        throw streamError;
+      }
+      if (!buffer) {
+        throw new SiteLogAIError(
+          "The model returned no text.",
+          "empty-response",
+          "Try again, or shorten the prompt."
+        );
+      }
+      // `parse-failed` at the very end of the stream is the SDK reporting a
+      // trailing partial chunk; the answer itself already arrived, so keep it.
+      return { text: buffer, source, ms: Math.round(now() - started) };
     } catch (err) {
       throw this.normalizeError(err);
     }
