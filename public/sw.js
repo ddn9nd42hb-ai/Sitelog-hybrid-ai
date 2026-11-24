@@ -3,18 +3,23 @@
  *
  * The pitch of this app is that it works in a basement with no signal, so the
  * shell has to be there before the network is. Strategy:
+ *   - install: precache the shell + every hashed build asset (injected by
+ *     scripts/precache.mjs at build time, so a first visit is also the last
+ *     visit needed for offline use)
  *   - navigation: network first, cached shell otherwise
  *   - same-origin assets: stale-while-revalidate
  *   - Firebase SDK from gstatic: cache-first (it is versioned, so immutable)
  */
-const VERSION = "sitelog-v1";
+const VERSION = "sitelog-dev";
+const BUILD_ASSETS = self.__SITELOG_PRECACHE__ || [];
 const SHELL = ["/", "/index.html", "/manifest.webmanifest", "/icon.svg"];
+const PRECACHE = [...new Set([...SHELL, ...BUILD_ASSETS])];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
       .open(VERSION)
-      .then((cache) => cache.addAll(SHELL))
+      .then((cache) => cache.addAll(PRECACHE))
       .then(() => self.skipWaiting())
       .catch(() => undefined)
   );

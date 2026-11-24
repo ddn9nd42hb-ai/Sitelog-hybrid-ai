@@ -40,11 +40,26 @@ dist/assets/index-*.js           150.62 kB │ gzip: 36.92 kB
 ✓ built in 1.46s
 ```
 
-## 4. Real-browser render (headless Chromium 159)
+## 4. Offline behaviour, verified in Chromium
+
+Served `dist/` (built with the precache step) and drove it in headless Chromium 159:
+
+```
+ONLINE hint:  On-device · short note
+SW registrations: 1   caches: ['sitelog-e5b7ef2a2084']
+OFFLINE hint: Offline · on-device
+net pill:     Offline
+reload while offline OK · title: SiteLog — hybrid field notes
+pageerrors:   []
+```
+
+The reload line is the important one: with the network cut, the service worker serves the app shell **and** the hashed JS/CSS bundle, so the app boots offline on a first-visit device. `scripts/precache.mjs` injects the build asset list into `dist/sw.js` at build time; without it the first-visit-then-offline case fails (found and fixed during this verification).
+
+## 5. Real-browser render (headless Chromium 159)
 
 The built `dist/` was served locally and opened in headless Chromium at 1280×980 and 402×860:
 
-- app boots, no `pageerror`, no console errors (empty console log array)
+- app boots, no `pageerror`, no console errors
 - header pills resolve: `Online`, and the Chrome Prompt API probe returns `downloadable` on that build → "Gemini Nano not downloaded" (correct: the model was not downloaded in that profile)
 - "Load sample note" fills the note, the routing hint reads **"On-device · short note"**
 - a 2,200-character note flips the hint to **"Cloud · long note"**
@@ -53,7 +68,7 @@ The built `dist/` was served locally and opened in headless Chromium at 1280×98
 
 Rendered screenshots of the empty state, the populated state (seeded preview data), the report and the mobile layout were reviewed during design QA.
 
-## 5. What is **not** verified yet
+## 6. What is **not** verified yet
 
 The live AI calls. Firebase AI Logic requires a Firebase project with AI Logic enabled and App Check enforced, and the App Check debug token must be safelisted in that project's console. Both need the account owner's sign-in, so this step is documented in `docs/firebase-setup.md` and then a single `npm run dev` verifies:
 

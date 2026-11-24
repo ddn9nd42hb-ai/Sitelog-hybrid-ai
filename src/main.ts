@@ -33,10 +33,16 @@ async function boot(): Promise<void> {
     projectLabel: "Riverside Café — fit-out"
   });
 
+  // Register the shell cache as early as possible: the offline story depends on
+  // it, and boot() may finish after the window `load` event has already fired.
   if ("serviceWorker" in navigator && location.protocol !== "file:") {
-    window.addEventListener("load", () => {
-      void navigator.serviceWorker.register("/sw.js").catch(() => undefined);
-    });
+    const register = () => {
+      void navigator.serviceWorker.register("/sw.js").catch((err: unknown) => {
+        console.warn("Service worker registration failed:", err);
+      });
+    };
+    if (document.readyState === "complete") register();
+    else window.addEventListener("load", register, { once: true });
   }
 }
 
